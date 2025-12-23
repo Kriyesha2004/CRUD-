@@ -10,6 +10,7 @@ export declare class UsersController {
         access_token: string;
     }>;
     read(): Promise<User[]>;
+    findOne(id: string, req: any): Promise<User | null>;
     update(id: string, data: User, req: any): Promise<User | null>;
     delete(id: string): Promise<User | null>;
 }

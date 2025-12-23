@@ -35,6 +35,7 @@ const Signup = () => {
     return (
         <div style={{ maxWidth: '400px', margin: 'auto', padding: '20px' }}>
             <h2>Sign Up</h2>
+            <button onClick={() => navigate('/')} style={{ marginBottom: '15px' }}>&larr; Back to Login</button>
             {error && <p style={{ color: 'red' }}>{error}</p>}
             <form onSubmit={handleSubmit}>
                 <div style={{ marginBottom: '10px' }}>

@@ -39,6 +39,19 @@ export class UsersController {
         return this.userService.readUser();
     }
 
+
+
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Get(':id')
+    async findOne(@Param('id') id: string, @Request() req) {
+        // Users can read only their own profile, or ADMIN can read any
+        if (req.user.role !== 'ADMIN' && req.user.userId !== id) {
+            throw new UnauthorizedException('You can only view your own profile');
+        }
+        // We need a method in service to find by ID, not just username
+        return this.userService.findById(id);
+    }
+
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Put(':id')
     async update(@Param('id') id: string, @Body() data: User, @Request() req) {

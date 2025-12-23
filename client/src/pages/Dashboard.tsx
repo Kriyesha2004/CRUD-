@@ -64,23 +64,15 @@ const Dashboard = () => {
         <div style={{ padding: '20px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h1>Dashboard</h1>
-                <button onClick={() => { logout(); navigate('/'); }}>Logout</button>
+                <div>
+                    <button onClick={() => navigate('/profile')} style={{ marginRight: '10px' }}>My Profile</button>
+                    <button onClick={() => { logout(); navigate('/'); }}>Logout</button>
+                </div>
             </div>
 
             <h3>Welcome, {user?.username} ({user?.role})</h3>
 
-            {user?.role === 'USER' && (
-                <div style={{ border: '1px solid #ccc', padding: '15px', marginTop: '20px' }}>
-                    <h4>Update Profile</h4>
-                    <p>You can only update your name.</p>
-                    <input
-                        value={newName}
-                        onChange={(e) => setNewName(e.target.value)}
-                        placeholder="New Username"
-                    />
-                    <button onClick={handleUpdateName} style={{ marginLeft: '10px' }}>Update Name</button>
-                </div>
-            )}
+
 
             {user?.role === 'ADMIN' && (
                 <div style={{ marginTop: '20px' }}>

@@ -57,12 +57,14 @@ let AuthService = class AuthService {
     async validateUser(username, pass) {
         const user = await this.usersService.findOne(username);
         if (user && await bcrypt.compare(pass, user.password)) {
-            const { password, ...result } = user;
+            const userObj = user.toObject ? user.toObject() : user;
+            const { password, ...result } = userObj;
             return result;
         }
         return null;
     }
     async login(user) {
+        console.log('Login Payload Construction. User ID:', user._id);
         const payload = { username: user.username, sub: user._id, role: user.role };
         return {
             access_token: this.jwtService.sign(payload),

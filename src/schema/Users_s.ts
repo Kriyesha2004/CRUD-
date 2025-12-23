@@ -20,6 +20,9 @@ export class User {
     @Prop({ default: 'USER', enum: ['USER', 'ADMIN'] })
     role: string;
 
+    @Prop()
+    profilePicture: string;
+
     createdAt: Date;
     updatedAt: Date;
 }

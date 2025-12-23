@@ -17,6 +17,7 @@ let User = class User {
     age;
     password;
     role;
+    profilePicture;
     createdAt;
     updatedAt;
 };
@@ -41,6 +42,10 @@ __decorate([
     (0, mongoose_1.Prop)({ default: 'USER', enum: ['USER', 'ADMIN'] }),
     __metadata("design:type", String)
 ], User.prototype, "role", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], User.prototype, "profilePicture", void 0);
 exports.User = User = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], User);

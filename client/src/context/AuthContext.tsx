@@ -26,10 +26,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const token = localStorage.getItem('token');
         if (token) {
             try {
-                const decoded = jwtDecode<User>(token);
-                // Map payload keys to expected User keys if necessary. 
-                // Based on JwtStrategy: { userId: payload.sub, username: payload.username, role: payload.role }
-                setUser(decoded);
+                const decoded: any = jwtDecode(token);
+                // Map 'sub' from JWT to 'userId'
+                setUser({ ...decoded, userId: decoded.sub, role: decoded.role, username: decoded.username });
             } catch (e) {
                 localStorage.removeItem('token');
             }
@@ -38,8 +37,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const login = (token: string) => {
         localStorage.setItem('token', token);
-        const decoded = jwtDecode<User>(token);
-        setUser(decoded);
+        const decoded: any = jwtDecode(token);
+        setUser({ ...decoded, userId: decoded.sub, role: decoded.role, username: decoded.username });
     };
 
     const logout = () => {

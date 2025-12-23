@@ -27,6 +27,10 @@ export class UsersService {
         return this.userModel.findOne({ username }).exec();
     }
 
+    async findById(id: string): Promise<User | null> {
+        return this.userModel.findById(id).exec();
+    }
+
     async readUser(): Promise<User[]> {
         const users = await this.userModel.find().exec();
         console.log(`Found ${users.length} users in DB`);
