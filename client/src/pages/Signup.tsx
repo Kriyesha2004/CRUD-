@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FormEvent } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -8,7 +8,7 @@ const Signup = () => {
         email: '',
         age: '',
         password: '',
-        role: 'USER' // Default role
+        role: 'USER'
     });
     const navigate = useNavigate();
     const [error, setError] = useState('');
@@ -17,7 +17,7 @@ const Signup = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         try {
             await axios.post('http://localhost:3000/users/signup', {
@@ -33,36 +33,49 @@ const Signup = () => {
     };
 
     return (
-        <div style={{ maxWidth: '400px', margin: 'auto', padding: '20px' }}>
-            <h2>Sign Up</h2>
-            <button onClick={() => navigate('/')} style={{ marginBottom: '15px' }}>&larr; Back to Login</button>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form onSubmit={handleSubmit}>
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Username</label>
-                    <input name="username" value={formData.username} onChange={handleChange} required style={{ width: '100%', padding: '8px' }} />
-                </div>
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Email</label>
-                    <input name="email" type="email" value={formData.email} onChange={handleChange} style={{ width: '100%', padding: '8px' }} />
-                </div>
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Age</label>
-                    <input name="age" type="number" value={formData.age} onChange={handleChange} style={{ width: '100%', padding: '8px' }} />
-                </div>
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Password</label>
-                    <input name="password" type="password" value={formData.password} onChange={handleChange} required style={{ width: '100%', padding: '8px' }} />
-                </div>
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Role</label>
-                    <select name="role" value={formData.role} onChange={handleChange} style={{ width: '100%', padding: '8px' }}>
-                        <option value="USER">User</option>
-                        <option value="ADMIN">Admin</option>
-                    </select>
-                </div>
-                <button type="submit" style={{ padding: '10px 20px' }}>Sign Up</button>
-            </form>
+        <div className="auth-container">
+            <div className="card auth-card">
+                <button onClick={() => navigate('/')} className="btn-link" style={{ marginBottom: '1rem' }}>
+                    &larr; Back to Login
+                </button>
+                <h2 style={{ textAlign: 'center', marginBottom: '1.5rem', fontSize: '2rem' }}>Create Account</h2>
+
+                {error && <div style={{ background: '#ffe5e5', color: '#d32f2f', padding: '10px', borderRadius: '8px', marginBottom: '1rem', textAlign: 'center' }}>{error}</div>}
+
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label>Username</label>
+                        <input name="username" value={formData.username} onChange={handleChange} placeholder="Choose a username" required />
+                    </div>
+                    <div className="form-group">
+                        <label>Password</label>
+                        <input name="password" type="password" value={formData.password} onChange={handleChange} placeholder="Choose a password" required />
+                    </div>
+                    <div className="form-group">
+                        <label>Email</label>
+                        <input name="email" type="email" value={formData.email} onChange={handleChange} placeholder="name@example.com" />
+                    </div>
+                    <div className="form-group">
+                        <label>Age</label>
+                        <input name="age" type="number" value={formData.age} onChange={handleChange} placeholder="0" />
+                    </div>
+                    <div className="form-group">
+                        <label>Role</label>
+                        <select
+                            name="role"
+                            value={formData.role}
+                            onChange={handleChange}
+                            style={{ width: '100%', padding: '0.85rem 1rem', borderRadius: '8px', border: '1px solid var(--border-color)', background: '#f8f9fa' }}
+                        >
+                            <option value="USER">User</option>
+                            <option value="ADMIN">Admin</option>
+                        </select>
+                    </div>
+                    <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '1rem' }}>
+                        Sign Up
+                    </button>
+                </form>
+            </div>
         </div>
     );
 };

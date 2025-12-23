@@ -76,97 +76,87 @@ const Profile = () => {
     }
 
     return (
-        <div style={{ maxWidth: '600px', margin: '30px auto', padding: '30px', border: '1px solid #e0e0e0', borderRadius: '10px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
-            <button onClick={() => navigate('/dashboard')} style={{ marginBottom: '20px', background: 'none', border: 'none', color: '#007bff', cursor: 'pointer', fontSize: '16px' }}>&larr; Back to Dashboard</button>
-
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                <h1 style={{ margin: 0, color: '#333' }}>My Profile</h1>
-                {!isEditing && (
-                    <button
-                        onClick={() => setIsEditing(true)}
-                        style={{ padding: '8px 16px', background: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-                    >
-                        Edit Profile
+        <div className="container" style={{ display: 'flex', justifyContent: 'center', paddingTop: '3rem' }}>
+            <div className="card" style={{ width: '100%', maxWidth: '600px', padding: '3rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+                    <button onClick={() => navigate('/dashboard')} className="btn-link" style={{ fontSize: '1rem' }}>
+                        &larr; Back
                     </button>
-                )}
-            </div>
-
-            {msg && <p style={{ color: msg.includes('Failed') ? 'red' : 'green', textAlign: 'center', fontWeight: 'bold' }}>{msg}</p>}
-
-            <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-                <div style={{
-                    width: '120px', height: '120px', borderRadius: '50%', backgroundColor: '#f0f0f0',
-                    margin: '0 auto', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    border: '3px solid #fff', boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-                }}>
-                    {formData.profilePicture ? (
-                        <img src={formData.profilePicture} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    ) : (
-                        <span style={{ color: '#888' }}>No Photo</span>
+                    {!isEditing && (
+                        <button onClick={() => setIsEditing(true)} className="btn btn-primary">
+                            Edit Profile
+                        </button>
                     )}
                 </div>
-                {isEditing && (
-                    <div style={{ marginTop: '15px' }}>
-                        <label style={{ cursor: 'pointer', color: '#007bff', fontWeight: 500 }}>
-                            Change Photo
-                            <input type="file" accept="image/*" onChange={handleFileChange} style={{ display: 'none' }} />
-                        </label>
+
+                {msg && <div style={{
+                    padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', textAlign: 'center',
+                    background: msg.includes('Failed') ? '#ffe5e5' : '#d4edda',
+                    color: msg.includes('Failed') ? '#c0392b' : '#155724'
+                }}>{msg}</div>}
+
+                <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+                    <div className="profile-img-container">
+                        {formData.profilePicture ? (
+                            <img src={formData.profilePicture} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        ) : (
+                            <div style={{ width: '100%', height: '100%', background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888' }}>No Photo</div>
+                        )}
                     </div>
-                )}
-            </div>
-
-            <form onSubmit={handleUpdate}>
-                {/* Username Field */}
-                <div style={{ marginBottom: '20px' }}>
-                    <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', color: '#555' }}>Username</label>
-                    {isEditing ? (
-                        <input
-                            value={formData.username}
-                            onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                            style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
-                        />
-                    ) : (
-                        <div style={{ padding: '10px', background: '#f9f9f9', borderRadius: '4px', color: '#333' }}>{formData.username || 'Not set'}</div>
+                    {isEditing && (
+                        <div style={{ marginTop: '1rem' }}>
+                            <label className="btn btn-secondary" style={{ cursor: 'pointer', display: 'inline-block' }}>
+                                Change Photo
+                                <input type="file" accept="image/*" onChange={handleFileChange} style={{ display: 'none' }} />
+                            </label>
+                        </div>
                     )}
+                    <h2 style={{ marginTop: '1.5rem', fontSize: '2rem' }}>{formData.username || 'User'}</h2>
+                    <p style={{ color: 'var(--text-light)' }}>{user?.role}</p>
                 </div>
 
-                {/* Email Field */}
-                <div style={{ marginBottom: '20px' }}>
-                    <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', color: '#555' }}>Email</label>
-                    {isEditing ? (
-                        <input
-                            type="email"
-                            value={formData.email}
-                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
-                        />
-                    ) : (
-                        <div style={{ padding: '10px', background: '#f9f9f9', borderRadius: '4px', color: '#333' }}>{formData.email || 'Not set'}</div>
-                    )}
-                </div>
-
-                {/* Age Field */}
-                <div style={{ marginBottom: '30px' }}>
-                    <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', color: '#555' }}>Age</label>
-                    {isEditing ? (
-                        <input
-                            type="number"
-                            value={formData.age}
-                            onChange={(e) => setFormData({ ...formData, age: e.target.value })}
-                            style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
-                        />
-                    ) : (
-                        <div style={{ padding: '10px', background: '#f9f9f9', borderRadius: '4px', color: '#333' }}>{formData.age || 'Not set'}</div>
-                    )}
-                </div>
-
-                {isEditing && (
-                    <div style={{ display: 'flex', gap: '10px' }}>
-                        <button type="submit" style={{ flex: 1, padding: '12px', background: '#28a745', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>Save Changes</button>
-                        <button type="button" onClick={() => { setIsEditing(false); fetchProfile(); }} style={{ flex: 1, padding: '12px', background: '#6c757d', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>Cancel</button>
+                <form onSubmit={handleUpdate}>
+                    <div className="form-group">
+                        <label>Username</label>
+                        {isEditing ? (
+                            <input value={formData.username} onChange={(e) => setFormData({ ...formData, username: e.target.value })} />
+                        ) : (
+                            <div style={{ padding: '0.85rem 1rem', background: '#f8f9fa', borderRadius: '8px', color: '#555' }}>
+                                {formData.username || 'N/A'}
+                            </div>
+                        )}
                     </div>
-                )}
-            </form>
+
+                    <div className="form-group">
+                        <label>Email</label>
+                        {isEditing ? (
+                            <input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
+                        ) : (
+                            <div style={{ padding: '0.85rem 1rem', background: '#f8f9fa', borderRadius: '8px', color: '#555' }}>
+                                {formData.email || 'N/A'}
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="form-group">
+                        <label>Age</label>
+                        {isEditing ? (
+                            <input type="number" value={formData.age} onChange={(e) => setFormData({ ...formData, age: e.target.value })} />
+                        ) : (
+                            <div style={{ padding: '0.85rem 1rem', background: '#f8f9fa', borderRadius: '8px', color: '#555' }}>
+                                {formData.age || 'N/A'}
+                            </div>
+                        )}
+                    </div>
+
+                    {isEditing && (
+                        <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
+                            <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>Save Changes</button>
+                            <button type="button" onClick={() => { setIsEditing(false); fetchProfile(); }} className="btn btn-secondary" style={{ flex: 1 }}>Cancel</button>
+                        </div>
+                    )}
+                </form>
+            </div>
         </div>
     );
 };
