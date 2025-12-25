@@ -1,4 +1,4 @@
-import React, { useState, useContext, FormEvent } from 'react';
+import React, { useState, useContext, type FormEvent } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -14,6 +14,9 @@ const Login = () => {
         e.preventDefault();
         try {
             const response = await axios.post('http://localhost:3000/users/login', { username, password });
+            // [SECURITY] Storing the token in localStorage. 
+            // Note: For higher security, consider HttpOnly cookies to prevent XSS.
+            // However, localStorage is acceptable for this demo if XSS is mitigated elsewhere.
             login(response.data.access_token);
             navigate('/dashboard');
         } catch (err) {

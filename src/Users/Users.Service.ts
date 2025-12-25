@@ -27,7 +27,7 @@ export class UsersService {
         return this.userModel.findOne({ username }).exec();
     }
 
-    async findById(id: string): Promise<User | null> {
+    async findById(id: string): Promise<UserDocument | null> {
         return this.userModel.findById(id).exec();
     }
 
@@ -37,9 +37,21 @@ export class UsersService {
         return users;
     }
 
-    async updateUser(id: string, data: User): Promise<User | null> {
+    async updateUser(id: string, data: Partial<User>): Promise<User | null> {
         console.log(`Updating user ${id} with data:`, data);
-        const updatedUser = await this.userModel.findByIdAndUpdate(id, data, { new: true }).exec();
+
+        const updates: any = { ...data };
+
+        // [SECURITY] Session Revocation Logic
+        // If critical fields (role, password) are changed, invalidate all existing sessions
+        // by changing the tokenVersion.
+        if (data.role || data.password) {
+            console.log('Critical update detected. Revoking existing user sessions.');
+            // Using timestamp ensures the version is always new and increasing.
+            updates.tokenVersion = Date.now();
+        }
+
+        const updatedUser = await this.userModel.findByIdAndUpdate(id, updates, { new: true }).exec();
         console.log('Updated user:', updatedUser);
         return updatedUser;
     }

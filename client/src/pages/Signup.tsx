@@ -1,4 +1,4 @@
-import React, { useState, FormEvent } from 'react';
+import React, { useState, type FormEvent } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -24,6 +24,8 @@ const Signup = () => {
                 ...formData,
                 age: Number(formData.age)
             });
+            // [SECURITY] Backend now enforces strict validation (DTOs).
+            // Invalid data (e.g. short password) will return 400 Bad Request.
             alert('Signup successful! Please login.');
             navigate('/');
         } catch (err: any) {

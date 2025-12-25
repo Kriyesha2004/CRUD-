@@ -84,7 +84,12 @@ let UsersService = class UsersService {
     }
     async updateUser(id, data) {
         console.log(`Updating user ${id} with data:`, data);
-        const updatedUser = await this.userModel.findByIdAndUpdate(id, data, { new: true }).exec();
+        const updates = { ...data };
+        if (data.role || data.password) {
+            console.log('Critical update detected. Revoking existing user sessions.');
+            updates.tokenVersion = Date.now();
+        }
+        const updatedUser = await this.userModel.findByIdAndUpdate(id, updates, { new: true }).exec();
         console.log('Updated user:', updatedUser);
         return updatedUser;
     }

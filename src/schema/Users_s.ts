@@ -23,6 +23,9 @@ export class User {
     @Prop()
     profilePicture: string;
 
+    @Prop({ default: 0 })
+    tokenVersion: number;
+
     createdAt: Date;
     updatedAt: Date;
 }

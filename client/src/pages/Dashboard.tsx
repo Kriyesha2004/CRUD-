@@ -13,7 +13,7 @@ const Dashboard = () => {
             <div className="dashboard-header">
                 <div>
                     <h1 style={{ fontSize: '2.5rem' }}>
-                        {user?.role === 'ADMIN' ? 'Admin Portal' : 'User Dashboard'}
+                        {user?.role! === 'ADMIN' ? 'Admin Portal' : 'User Dashboard'}
                     </h1>
                     <p style={{ color: 'var(--text-light)', fontSize: '1.2rem', marginTop: '0.5rem' }}>
                         Welcome back, <span style={{ color: 'var(--primary-color)', fontWeight: 600 }}>{user?.username}</span>

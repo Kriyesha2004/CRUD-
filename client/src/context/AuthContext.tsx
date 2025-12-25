@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect, type ReactNode } from 'react';
 import { jwtDecode } from 'jwt-decode';
+import axios from 'axios';
 
 interface User {
     userId: string;
@@ -45,6 +46,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         localStorage.removeItem('token');
         setUser(null);
     };
+
+    // [SECURITY] Global Interceptor
+    // If any API call returns 401 (Unauthorized) or 403 (Forbidden),
+    // it means the session is invalid (revoked, expired, or role changed).
+    // We strictly logout the user to prevent them from staying on a protected page.
+    useEffect(() => {
+        const interceptor = axios.interceptors.response.use(
+            (response) => response,
+            (error) => {
+                if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+                    logout();
+                }
+                return Promise.reject(error);
+            }
+        );
+
+        return () => {
+            axios.interceptors.response.eject(interceptor);
+        };
+    }, []);
 
     return (
         <AuthContext.Provider value={{ user, login, logout }}>

@@ -23,7 +23,13 @@ export class AuthService {
 
     async login(user: any) {
         console.log('Login Payload Construction. User ID:', user._id);
-        const payload = { username: user.username, sub: user._id, role: user.role };
+        // [SECURITY] Include tokenVersion to allow for session revocation.
+        const payload = {
+            username: user.username,
+            sub: user._id,
+            role: user.role,
+            tokenVersion: user.tokenVersion || 0
+        };
         return {
             access_token: this.jwtService.sign(payload),
         };

@@ -65,7 +65,12 @@ let AuthService = class AuthService {
     }
     async login(user) {
         console.log('Login Payload Construction. User ID:', user._id);
-        const payload = { username: user.username, sub: user._id, role: user.role };
+        const payload = {
+            username: user.username,
+            sub: user._id,
+            role: user.role,
+            tokenVersion: user.tokenVersion || 0
+        };
         return {
             access_token: this.jwtService.sign(payload),
         };

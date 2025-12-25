@@ -1,10 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Request, UseGuards, UnauthorizedException } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Request, UseGuards, UnauthorizedException, UsePipes, ValidationPipe } from '@nestjs/common';
 import { UsersService } from './Users.Service';
 import { User } from 'src/schema/Users_s';
 import { AuthService } from '../auth/auth.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
+import { CreateUserDto } from 'src/dto/create-user.dto';
+import { LoginDto } from 'src/dto/login.dto';
 
 @Controller('users')
 export class UsersController {
@@ -14,9 +16,11 @@ export class UsersController {
     ) { }
 
     @Post('signup')
-    async signup(@Body() user: User) {
+    @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+    async signup(@Body() user: CreateUserDto) {
         try {
-            return await this.userService.createUser(user);
+            // DTO validation passed
+            return await this.userService.createUser(user as User);
         } catch (error) {
             console.error('Signup Error:', error);
             throw new UnauthorizedException(error.message || 'Signup failed');
@@ -24,7 +28,8 @@ export class UsersController {
     }
 
     @Post('login')
-    async login(@Body() req) {
+    @UsePipes(new ValidationPipe())
+    async login(@Body() req: LoginDto) {
         const user = await this.authService.validateUser(req.username, req.password);
         if (!user) {
             throw new UnauthorizedException();
