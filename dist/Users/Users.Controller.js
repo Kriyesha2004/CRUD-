@@ -14,6 +14,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersController = void 0;
 const common_1 = require("@nestjs/common");
+const platform_express_1 = require("@nestjs/platform-express");
+const multer_1 = require("multer");
+const path_1 = require("path");
 const Users_Service_1 = require("./Users.Service");
 const Users_s_1 = require("../schema/Users_s");
 const auth_service_1 = require("../auth/auth.service");
@@ -54,9 +57,14 @@ let UsersController = class UsersController {
         }
         return this.userService.findById(id);
     }
-    async update(id, data, req) {
+    async update(id, data, file, req) {
         if (req.user.role !== 'ADMIN' && req.user.userId !== id) {
             throw new common_1.UnauthorizedException('You can only update your own profile');
+        }
+        if (file) {
+            const protocol = req.protocol;
+            const host = req.get('host');
+            data.profilePicture = `${protocol}://${host}/uploads/${file.filename}`;
         }
         return this.userService.updateUser(id, data);
     }
@@ -101,11 +109,22 @@ __decorate([
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, common_1.Put)(':id'),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('profilePicture', {
+        storage: (0, multer_1.diskStorage)({
+            destination: './uploads',
+            filename: (req, file, cb) => {
+                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+                const ext = (0, path_1.extname)(file.originalname);
+                cb(null, `user-${uniqueSuffix}${ext}`);
+            }
+        })
+    })),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
-    __param(2, (0, common_1.Request)()),
+    __param(2, (0, common_1.UploadedFile)()),
+    __param(3, (0, common_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Users_s_1.User, Object]),
+    __metadata("design:paramtypes", [String, Users_s_1.User, Object, Object]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "update", null);
 __decorate([

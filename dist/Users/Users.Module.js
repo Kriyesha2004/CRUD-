@@ -9,6 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Usermodule = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
+const platform_express_1 = require("@nestjs/platform-express");
 const Users_Controller_1 = require("./Users.Controller");
 const Users_Service_1 = require("./Users.Service");
 const Users_s_1 = require("../schema/Users_s");
@@ -20,6 +21,9 @@ exports.Usermodule = Usermodule = __decorate([
     (0, common_1.Module)({
         imports: [
             mongoose_1.MongooseModule.forFeature([{ name: Users_s_1.User.name, schema: Users_s_1.UserSchema }]),
+            platform_express_1.MulterModule.register({
+                dest: './uploads',
+            }),
             (0, common_1.forwardRef)(() => auth_module_1.AuthModule),
         ],
         controllers: [Users_Controller_1.UsersController],

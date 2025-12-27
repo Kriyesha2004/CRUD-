@@ -13,6 +13,6 @@ export declare class UsersController {
     }>;
     read(): Promise<User[]>;
     findOne(id: string, req: any): Promise<import("src/schema/Users_s").UserDocument | null>;
-    update(id: string, data: User, req: any): Promise<User | null>;
+    update(id: string, data: User, file: any, req: any): Promise<User | null>;
     delete(id: string): Promise<User | null>;
 }

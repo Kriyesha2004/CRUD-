@@ -1,4 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Request, UseGuards, UnauthorizedException, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Request, UseGuards, UnauthorizedException, UsePipes, ValidationPipe, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 import { UsersService } from './Users.Service';
 import { User } from 'src/schema/Users_s';
 import { AuthService } from '../auth/auth.service';
@@ -59,14 +62,29 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Put(':id')
-    async update(@Param('id') id: string, @Body() data: User, @Request() req) {
+    @UseInterceptors(FileInterceptor('profilePicture', {
+        storage: diskStorage({
+            destination: './uploads',
+            filename: (req, file, cb) => {
+                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+                const ext = extname(file.originalname);
+                cb(null, `user-${uniqueSuffix}${ext}`);
+            }
+        })
+    }))
+    async update(@Param('id') id: string, @Body() data: User, @UploadedFile() file: any, @Request() req) {
         // Users can update only their own name, or ADMIN can update anything
         if (req.user.role !== 'ADMIN' && req.user.userId !== id) {
             throw new UnauthorizedException('You can only update your own profile');
         }
-        // If not admin, restrict to only updating 'username' (name) as per req? 
-        // User requirements say "Users can update only their own name". 
-        // Implementing strict check if needed, but for now allowing update if ID matches.
+
+        if (file) {
+            // Set the full URL for the profile picture
+            const protocol = req.protocol;
+            const host = req.get('host');
+            data.profilePicture = `${protocol}://${host}/uploads/${file.filename}`;
+        }
+
         return this.userService.updateUser(id, data);
     }
 

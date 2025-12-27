@@ -13,6 +13,7 @@ const Profile = () => {
         age: '',
         profilePicture: ''
     });
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [msg, setMsg] = useState('');
 
     useEffect(() => {
@@ -43,6 +44,7 @@ const Profile = () => {
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            setSelectedFile(file);
             const reader = new FileReader();
             reader.onloadend = () => {
                 setFormData(prev => ({ ...prev, profilePicture: reader.result as string }));
@@ -55,16 +57,20 @@ const Profile = () => {
         e.preventDefault();
         try {
             const token = localStorage.getItem('token');
-            await axios.put(`http://localhost:3000/users/${user?.userId}`, {
-                username: formData.username,
-                email: formData.email,
-                age: Number(formData.age),
-                profilePicture: formData.profilePicture
-            }, {
+            const data = new FormData();
+            data.append('username', formData.username);
+            data.append('email', formData.email);
+            data.append('age', formData.age);
+            if (selectedFile) {
+                data.append('profilePicture', selectedFile);
+            }
+
+            await axios.put(`http://localhost:3000/users/${user?.userId}`, data, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setMsg('Profile Updated Successfully!');
             setIsEditing(false); // Switch back to view mode
+            fetchProfile(); // Refresh to get the actual URL from server
         } catch (error) {
             console.error(error);
             setMsg('Update Failed');
